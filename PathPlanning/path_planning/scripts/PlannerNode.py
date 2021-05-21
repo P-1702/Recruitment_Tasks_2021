@@ -154,6 +154,7 @@ class PlannerNode:
 
         path = astar_search(start, end)
         count=0
+        next_move=[]
         for move in path:
             count+=1
             if count<len(path):
@@ -162,9 +163,9 @@ class PlannerNode:
                         x1=(path[count])[0]
                         y1=(path[count])[1]
                         direc=predict_move(x,y,x1,y1)
-                        next_mov = direction()
-                        next_mov.direction=direc
-                        self.direction_publisher.publish(next_mov)
+                        next_mov[count] = direction()
+                        next_mov[count].direction=direc
+                        self.direction_publisher.publish(next_mov[count])
            else:
                         pass    
         print('Steps to goal: {0}'.format(len(path)))
