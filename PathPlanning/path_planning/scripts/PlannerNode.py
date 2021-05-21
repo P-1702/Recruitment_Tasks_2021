@@ -45,34 +45,7 @@ class PlannerNode:
         # this function will be called everytime the map sends data regarding the map on the '/walls' topic
         # you will recieve the data in the form of the map_detail variable which is an object of custom message type map_detail.msg from the msg directory
         print(map_detail)
-        
-        start = (map_detail.current_x, map_detail.current_y)
-        end = (map_detail.end_x, map_detail.end_y)
-        width = map_detail.width
-        height = map_detail.height
-
-        path = astar_search(start, end)
-        count=0
-        for move in path:
-        count+=1
-        if count<len(path):
-            x=move[0]
-            y=move[1]
-            x1=(path[count])[0]
-            y1=(path[count])[1]
-            direc=predict_move(x,y,x1,y1)
-            next_mov = direction()
-            next_mov.direction=direc
-            self.direction_publisher.publish(next_mov)
-        else:
-            pass    
-        print('Steps to goal: {0}'.format(len(path)))
-
-    # This class represents a node
-        
-
-
-        
+      
         def binary_conv(n):
             a=[]
             for i in range(3,-1,-1):
@@ -81,9 +54,41 @@ class PlannerNode:
                     a.append("1")   
                 else:
                     a.append("0") 
-            return a    
+            return a
 
-        # A* search
+        def neighbor_update(x,y,data):
+            neighbors = [(x, y+1),(x-1, y), (x+1, y), (x, y-1)]
+            flag=0
+            pattern=binary_conv(data)
+            for direction in pattern:
+                if(direction==1):
+                    neighbors.pop(flag)
+                    neighbors.insert(flag,None)
+                flag+=1
+
+            return neighbors
+
+        # Check if a neighbor should be added to open list
+        def add_to_open(open, neighbor):
+            for node in open:
+                if (neighbor == node and neighbor.f >= node.f):
+                    return False
+            return True
+        # The main entry point for this module
+            
+        def predict_move(x,y,x1,y1):
+            if(x==x1 and y1-y==1):
+                value="up"
+            if(x==x1 and y1-y==-1):
+                value="down"
+            if(x1-x==1 and y1==y):
+                value="right"
+            if(x1-x==-1 and y1==y):
+                value="left"
+            return value
+
+
+       # A* search
         def astar_search(start, end):
 
             # Create lists for open nodes and closed nodes
@@ -140,37 +145,42 @@ class PlannerNode:
                         open.append(neighbor)
             # Return None, no path is found
             return None
-        # Check if a neighbor should be added to open list
-        def add_to_open(open, neighbor):
-            for node in open:
-                if (neighbor == node and neighbor.f >= node.f):
-                    return False
-            return True
-        # The main entry point for this module
-
-        def neighbor_update(x,y,data):
-            neighbors = [(x, y+1),(x-1, y), (x+1, y), (x, y-1)]
-            flag=0
-            pattern=binary_conv(data)
-            for direction in pattern:
-                if(direction==1):
-                    neighbors.pop(flag)
-                    neighbors.insert(flag,None)
-                flag+=1
-
-            return neighbors
 
 
-        def predict_move(x,y,x1,y1):
-            if(x==x1 and y1-y==1):
-                value="up"
-            if(x==x1 and y1-y==-1):
-                value="down"
-            if(x1-x==1 and y1==y):
-                value="right"
-            if(x1-x==-1 and y1==y):
-                value="left"
-            return value
+        start = (map_detail.current_x, map_detail.current_y)
+        end = (map_detail.end_x, map_detail.end_y)
+        width = map_detail.width
+        height = map_detail.height
+
+        path = astar_search(start, end)
+        count=0
+        for move in path:
+        count+=1
+        if count<len(path):
+            x=move[0]
+            y=move[1]
+            x1=(path[count])[0]
+            y1=(path[count])[1]
+            direc=predict_move(x,y,x1,y1)
+            next_mov = direction()
+            next_mov.direction=direc
+            self.direction_publisher.publish(next_mov)
+        else:
+            pass    
+        print('Steps to goal: {0}'.format(len(path)))
+
+    # This class represents a node
+        
+
+
+        
+    
+
+ 
+
+
+
+
 
         
             
