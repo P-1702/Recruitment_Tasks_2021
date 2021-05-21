@@ -181,5 +181,17 @@ if __name__ == '__main__':
     PlannerNode()
     rospy.spin()
         
-        
+bad callback: <bound method PlannerNode.wall_callback of <__main__.PlannerNode object at 0x7fc6a1021940>>
+Traceback (most recent call last):
+  File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/topics.py", line 750, in _invoke_callback
+    cb(msg)
+  File "/home/prateek/robocon/catkin_ws/src/path_planning/scripts/PathPlanner.py", line 155, in wall_callback
+    path = astar_search(start, end)
+  File "/home/prateek/robocon/catkin_ws/src/path_planning/scripts/PathPlanner.py", line 126, in astar_search
+    neighbors_new = neighbor_update(x,y,binary_conv(current_value))
+  File "/home/prateek/robocon/catkin_ws/src/path_planning/scripts/PathPlanner.py", line 62, in neighbor_update
+    pattern=binary_conv(data)
+  File "/home/prateek/robocon/catkin_ws/src/path_planning/scripts/PathPlanner.py", line 52, in binary_conv
+    if(int(n/(2**i))==1):
+TypeError: unsupported operand type(s) for /: 'list' and 'int'
         
