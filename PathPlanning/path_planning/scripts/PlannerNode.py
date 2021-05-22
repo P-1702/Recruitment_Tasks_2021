@@ -37,9 +37,13 @@
             rospy.sleep(5) # a delay of some time to let the setup of the subscriber and publisher be completed
 
             # Since we know that the first step the bot will take will be down, we can simply do it here
-            temp_val = direction() # make an object of the message type of the publisher
-            temp_val.direction = 'down' # assign value to the object. Refer the custom direction.msg in the msg directory
-            self.direction_publisher.publish(temp_val) # publish the object
+            # publish the object
+            
+            
+            next_mov = direction()
+            next_mov.direction=wall_callback()
+            self.direction_publisher.publish(next_mov)
+            
 
        def binary_conv(n):
                 a=[]
@@ -86,7 +90,7 @@
                     print(map_detail)
                         open = []
                         closed = []
-                        steps=0
+                       
                         next_mov=[]
                         
                         start = (map_detail.current_x, map_detail.current_y)
@@ -146,12 +150,10 @@
                                     y1=neighbor.position[1]
                                     x=neighbor.position[0] 
                                     y=neighbor.position[1]
-                                    steps+=1
-                                    next_mov.append(steps)
                                     direc=predict_move(x,y,x1,y1)
-                                    next_mov[(steps-1)] = direction()
-                                    next_mov[(steps-1)].direction=direc
-                                    self.direction_publisher.publish(next_mov[(steps-1)])
+                                    return direc
+                                    
+                                    
                         # Return None, no path is found
                         return None
 
