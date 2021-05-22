@@ -39,10 +39,13 @@
             # Since we know that the first step the bot will take will be down, we can simply do it here
             # publish the object
             
-            
-            next_mov = direction()
-            next_mov.direction=wall_callback()
-            self.direction_publisher.publish(next_mov)
+            while(True):
+                if(map_detail.current_x== map_detail.end_x and map_detail.current_y== map_detail.end_y):
+                    break
+                else:
+                    next_mov = direction()
+                    next_mov.direction=wall_callback.direc
+                    self.direction_publisher.publish(next_mov)
             
 
        def binary_conv(n):
@@ -54,6 +57,8 @@
                     else:
                         a.append("0") 
                 return a
+            
+     
 
        def neighbor_update(x,y,data):
                 neighbors = [(x, y+1),(x-1, y), (x+1, y), (x, y-1)]
@@ -123,7 +128,7 @@
                                 # Return reversed path
 
                                 return path[::-1]
-                            # Unzip the current node position
+                            
                             (x, y) = current_node.position
                             # Get neighbors
                             neighbors_new = neighbor_update(x,y,current_value)
@@ -132,7 +137,7 @@
                             for next in neighbors_update:
                                 if(next==None):
                                     continue
-                                # Get value from map
+                                # Avoid walls
                                 # Create a neighbor node
                                 neighbor = Node(next, current_node)
                                 # Check if the neighbor is in the closed list
@@ -144,33 +149,16 @@
                                 neighbor.f = neighbor.g + neighbor.h
                                 # Check if neighbor is in open list and if it has a lower f value
                                 if(add_to_open(open, neighbor) == True):
-                                    # Everything is green, add neighbor to open list
                                     open.append(neighbor)
                                     x1=neighbor.position[0]
                                     y1=neighbor.position[1]
-                                    x=neighbor.position[0] 
-                                    y=neighbor.position[1]
-                                    direc=predict_move(x,y,x1,y1)
-                                    return direc
+                                    wall_callback.direc=predict_move(x,y,x1,y1)
+                                    return 0
                                     
                                     
                         # Return None, no path is found
                         return None
 
-
-
-              
-
-
-
-           # A* search
-           :
-
-                # Create lists for open nodes and closed nodes
-                
-
-        # This class represents a node
-            
 
 
             
